@@ -7,12 +7,11 @@
   box-shadow: #fefefe 1px 1px 3px;
 }
 
-.task {
-  list-style: none;
+.quake {
   width: 100%;
-  padding-bottom: 20px;
+  padding-bottom: 8px;
   border-bottom: 1px dashed #9f9f9f;
-  margin-bottom: 40px;
+  margin-bottom: 24px;
 }
 
 .tag {

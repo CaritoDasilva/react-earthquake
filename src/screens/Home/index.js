@@ -1,50 +1,49 @@
-import React from 'react';
+import React, { Component } from 'react';
+
+import Quake from '../../components/Quake';
 
 import './style.css';
 
-const tareas = [
-  {
-    id: 1,
-    title: 'Hacer curso de React',
-    body: 'Crear la presentación y los ejercicios de ejemplo',
-    tags: ['react', 'curso'],
-    done: false,
-    createdAt: '2019-01-10T14:41:52.566Z',
-    finishedAt: null
-  },
-  {
-    id: 2,
-    title: 'Hacer curso de React',
-    body: 'Crear la presentación y los ejercicios de ejemplo',
-    tags: ['react', 'curso'],
-    done: false,
-    createdAt: '2019-01-10T14:41:52.566Z',
-    finishedAt: null
-  },
-  {
-    id: 3,
-    title: 'Hacer curso de React',
-    body: 'Crear la presentación y los ejercicios de ejemplo',
-    tags: ['react', 'curso'],
-    done: false,
-    createdAt: '2019-01-10T14:41:52.566Z',
-    finishedAt: null
-  },
-  {
-    id: 4,
-    title: 'Hacer curso de React',
-    body: 'Crear la presentación y los ejercicios de ejemplo',
-    tags: ['react', 'curso'],
-    done: false,
-    createdAt: '2019-01-10T14:41:52.566Z',
-    finishedAt: null
-  }
-]
+const url = 'https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2019-01-01&endtime=2019-01-15';
 
-const Home = () => (
-  <div className="main">
-    <h1>Mi Lista</h1>
-  </div>
-);
+class Home extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      loading: false,
+      quakes: [],
+      error: false
+    };
+  }
+
+  async componentDidMount() {
+    try {
+      this.setState({loading: true, error: false });
+      const response = await fetch(url);
+      const responseJson = await response.json();
+      const quakes = responseJson.features;
+      this.setState({quakes, loading: false, error: false });
+    } catch(e) {
+      this.setState({ loading: false, error: true })
+    }
+
+  }
+
+  render() {
+    const { quakes, loading, error } = this.state;
+    return (
+      <div className="main">
+        <h1>Terremotos</h1>
+        {!loading && quakes.filter(quake => quake.properties.mag > 4).map(quake =>
+          <Quake quake={quake} />
+        )}
+        {loading && <p>Cargando información...</p> }
+        {!loading && !error && !quakes.length && <h2>No hay información disponible</h2>}
+        {!loading && error && <h2>Ocurrio un error</h2>}
+      </div>
+    );
+  }
+}
 
 export default Home;
